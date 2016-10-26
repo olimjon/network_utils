@@ -1,0 +1,22 @@
+{
+  "name": "network_utils",
+  "version": "1.0.0",
+  "description": "Network Utilities for small projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/olimjon/network_utils.git"
+  },
+  "author": "Olimjon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/olimjon/network_utils/issues"
+  },
+  "homepage": "https://github.com/olimjon/network_utils#readme",
+  "dependencies": {
+    "underscore": "^1.8.3"
+  }
+}
