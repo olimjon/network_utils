@@ -3,7 +3,7 @@ var _ = require('underscore');
 var Utils = {
     api_host: 'https://api.shajara.co',
     server_host: 'https://dev.shajara.co',
-    loadAuthorized: function (props, callback) {
+    loadAuthorized: function (props, callback){
         if (_.isEmpty(props.contentType)) {
             props.contentType = "application/json";
         }
@@ -12,6 +12,9 @@ var Utils = {
         }
         if (_.isEmpty(props.type)) {
             props.type = "GET";
+        }
+        if (_.isEmpty(props.data)) {
+            props.data = data;
         }
         if (_.isEmpty(props.server)) {
             if (props.server == 'api') {
@@ -24,39 +27,42 @@ var Utils = {
         }
         if (_.isEmpty(props.beforeSend)) {
             props.beforeSend = function (request) {
-                request.setRequestHeader('HB-User-Id', localStorage.id);
-                request.setRequestHeader('HB-Token', localStorage.token);
+                request.setRequestHeader('HB-User-Id', localStorage.getItem('id'));
+                request.setRequestHeader('HB-Token', localStorage.getItem('token'));
             };
         }
-
-        $.ajax({
-            url: props.server + 'props.url',
+        
+        var ajaxOptions = {
+            url: props.server + props.url,
             dataType: props.dataType,
             contentType: props.contentType,
-            type: 'GET',
+            type: props.type,
             success: function (data) {
                 if (!_.isEmpty(callback) && data.code == 0) {
                     callback(null, data);
                 } else {
                     callback({msg: 'Server error happened'}, data);
                 }
-            }
-            ,
+            },
             error: function () {
                 if (!_.isEmpty(callback)) {
                     callback({msg: 'AJAX error happened'});
                 }
-            }
-            ,
-            beforeSend: props.beforeSend, complete: function () {
-            }
-        });
+            },
+            beforeSend: props.beforeSend 
+        };
+        
+        if(props.type == 'POST'){
+            ajaxOptions.data = props.data;
+        }
+        
+        $.ajax(ajaxOptions);
     },
     load: function (props, callback) {
         props.beforeSend = function () {
         };
         this.loadAuthorized(props, callback)
-    },
-}
+    }
+};
 
 module.exports = Utils;
