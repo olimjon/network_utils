@@ -25,37 +25,39 @@ var Utils = {
                 props.server = this.api_host;
             }
         }
-        if (_.isEmpty(props.beforeSend)) {
+        if (typeof props.beforeSend == 'function') {
+
+        }else{
             props.beforeSend = function (request) {
                 request.setRequestHeader('HB-User-Id', localStorage.getItem('id'));
                 request.setRequestHeader('HB-Token', localStorage.getItem('token'));
             };
         }
-        
         var ajaxOptions = {
             url: props.server + props.url,
             dataType: props.dataType,
             contentType: props.contentType,
             type: props.type,
             success: function (data) {
-                if (!_.isEmpty(callback) && data.code == 0) {
-                    callback(null, data);
-                } else {
-                    callback({msg: 'Server error happened'}, data);
+                if(typeof callback == 'function'){
+                    if (data.code == 0) {
+                        callback(null, data);
+                    }
+                    else{
+                        callback({msg: 'Server error happened'}, data);
+                    }
                 }
             },
             error: function () {
-                if (!_.isEmpty(callback)) {
+                if (typeof callback == 'function') {
                     callback({msg: 'AJAX error happened'});
                 }
             },
-            beforeSend: props.beforeSend 
+            beforeSend: props.beforeSend
         };
-        
         if(props.type == 'POST'){
             ajaxOptions.data = props.data;
         }
-        
         $.ajax(ajaxOptions);
     },
     load: function (props, callback) {
